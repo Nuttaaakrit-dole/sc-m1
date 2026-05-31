@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบทดสอบ N-NET สังคมศึกษา ม.ต้น</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #c2410c; --primary-dark: #7c2d12; --primary-light: #ffedd5;
+    --green: #15803d; --green-light: #dcfce7;
+    --red: #b91c1c; --red-light: #fee2e2;
+    --gray-bg: #f8fafc; --gray-card: #ffffff; --gray-border: #e2e8f0;
+    --text: #1e293b; --text-muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sarabun', sans-serif; background: var(--gray-bg); color: var(--text); padding-bottom: 60px; }
+  .container { max-width: 680px; margin: 0 auto; padding: 16px; }
+  
+  .header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 16px; padding: 24px; color: #fff; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(194,65,12,0.15); }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+  .title { font-size: 22px; font-weight: 700; margin-bottom: 5px; line-height: 1.4; }
+  .subtitle { font-size: 14px; opacity: 0.9; }
+
+  .card { background: var(--gray-card); border-radius: 16px; padding: 24px; border: 1px solid var(--gray-border); margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+  
+  .inp-group { margin-bottom: 16px; text-align: left; }
+  .inp-label { display: block; font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+  .inp-text { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--gray-border); font-family: 'Sarabun', sans-serif; font-size: 16px; background: #fdfdfd; }
+  
+  .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-family: 'Sarabun', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; }
+  .btn-secondary { background: #e2e8f0; color: var(--text); width: 48%; }
+  
+  .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
+  .nav-buttons .btn-primary { width: 48%; }
+
+  .prog-text { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .prog-bar { background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+  .prog-fill { background: var(--primary); height: 100%; width: 0%; transition: 0.3s; }
+
+  .q-badge { font-size: 12px; color: var(--primary-dark); background: var(--primary-light); display: inline-block; padding: 4px 10px; border-radius: 6px; font-weight: 700; margin-bottom: 12px; }
+  .q-text { font-size: 18px; font-weight: 600; margin-bottom: 20px; line-height: 1.6; }
+
+  .choices { display: flex; flex-direction: column; gap: 12px; }
+  .choice { display: flex; align-items: center; background: #fff; border: 2px solid var(--gray-border); padding: 14px 16px; border-radius: 12px; cursor: pointer; font-size: 15px; font-family: 'Sarabun', sans-serif; text-align: left; transition: 0.2s; width: 100%; min-height: 60px; }
+  
+  .choice.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary-dark); font-weight: 600; }
+  .choice.correct { border-color: var(--green); background: var(--green-light); color: var(--green); font-weight: 600; }
+  .choice.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); font-weight: 600; }
+  
+  .c-let { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; border-radius: 50%; margin-right: 15px; font-weight: 700; font-size: 14px; flex-shrink: 0; color: var(--text-muted); }
+  .choice.selected .c-let { background: var(--primary); color: #fff; }
+  .choice.correct .c-let { background: var(--green); color: #fff; }
+  .choice.wrong .c-let { background: var(--red); color: #fff; }
+
+  .feedback { padding: 16px; border-radius: 12px; font-size: 14px; line-height: 1.6; margin-top: 16px; }
+  .feedback.ok { background: var(--green-light); border: 1px solid var(--green); color: var(--green); }
+  .feedback.no { background: var(--red-light); border: 1px solid var(--red); color: var(--red); }
+  .fb-explain { font-size: 13px; color: #334155; background: rgba(255,255,255,0.7); padding: 10px; border-radius: 8px; margin-top: 10px; display: block; border-left: 3px solid var(--text-muted); }
+  
+  .analysis-card { background: #ffffff; border: 1px solid var(--gray-border); border-radius: 16px; padding: 24px; text-align: left; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+  .analysis-header { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .analysis-item { background: #f8fafc; padding: 12px 16px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #cbd5e1; }
+  .analysis-item.weak { border-left-color: var(--red); background: #fff5f5; }
+  .analysis-item.good { border-left-color: var(--green); background: #f6fdf9; }
+  .analysis-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 4px; }
+  .analysis-tag.weak { background: var(--red-light); color: var(--red); }
+  .analysis-tag.good { background: var(--green-light); color: var(--green); }
+
+  .grid-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .stat-box { background: #f8fafc; padding: 16px 10px; border-radius: 12px; text-align: center; border: 1px solid var(--gray-border); }
+  .stat-num { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+  .stat-num.green { color: var(--green); }
+  .stat-num.red { color: var(--red); }
+  .stat-num.blue { color: var(--primary); }
+  
+  .review-item { padding: 16px 0; border-bottom: 1px solid var(--gray-border); text-align: left; }
+  .review-item:last-child { border-bottom: none; }
+  .r-q { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .r-a { font-size: 14px; margin-bottom: 4px; }
+  .ri-tick { display: inline-block; width: 20px; font-weight: bold; margin-right: 5px; }
+  .ri-tick.ok { color: var(--green); }
+  .ri-tick.no { color: var(--red); }
+
+  .dot-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; justify-content: center; }
+  .dot { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--gray-border); font-family: 'Sarabun'; font-weight: 600; font-size: 12px; cursor: pointer; background: #fff; color: var(--text); }
+  .dot.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .dot.ok { background: var(--green-light); color: var(--green); border-color: var(--green); }
+  .dot.no { background: var(--red-light); color: var(--red); border-color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="badge">N-NET • สกร. มัธยมศึกษาตอนต้น</div>
+    <div class="title">🗺️ แบบทดสอบวิชาสังคมศึกษา (สมรรถนะขั้นสูง)</div>
+    <div class="subtitle" id="subtitle-text">เน้นการคิดวิเคราะห์ สถานการณ์ประยุกต์ และตัวลวงคุณภาพสูง</div>
+  </div>
+  
+  <div id="app"></div>
+</div>
+
+<script>
+const database = [
+  { 
+    cat: "ศาสนา ศีลธรรม จริยธรรม", 
+    q: "นายดำต้องตัดสินใจเลือกเส้นทางอาชีพระหว่างการทำงานที่มีรายได้สูงแต่ต้องปิดบังความจริงบางอย่างกับลูกค้า กับการทำงานที่มีรายได้น้อยแต่ซื่อสัตย์โปร่งใส การที่นายดำพิจารณาเลือกงานตามหลักศาสนาพุทธเพื่อความสงบร่มเย็นในใจ สอดคล้องกับหลักธรรมข้อใดที่สุด?", 
+    choices: ["อริยสัจ 4 ในส่วนนิโรธ", "เบญจศีล ข้ออทินนาทาน", "สัมมาอาชีวะ ในอริยมรรคมีองค์ 8", "มงคล 38 ข้อการฟังธรรมตามกาล"], 
+    a: 2, 
+    exp: "สัมมาอาชีวะ คือการเลี้ยงชีพชอบ หมายถึงการทำมาหากินด้วยอาชีพที่สุจริต ไม่ผิดกฎหมายและไม่ผิดศีลธรรม ซึ่งตรงกับสถานการณ์ของนายดำโดยตรง ตัวลวงอื่นๆ เป็นหลักธรรมที่ดีแต่ไม่ตรงประเด็นการเลือกอาชีพสุจริต" 
+  },
+  { 
+    cat: "ศาสนา ศีลธรรม จริยธรรม", 
+    q: "ในสังคมที่มีความหลากหลายทางศาสนาและความเชื่อ หากนักศึกษาต้องการปฏิบัติตามหลักธรรม 'สัปปุริสธรรม 7' ในข้อ 'มัตตัญญุตา' (ความเป็นผู้รู้จักประมาณ) เพื่อสร้างสันติภาพในชุมชน ควรเลือกปฏิบัติอย่างไรจึงจะเหมาะสมที่สุด?", 
+    choices: ["การศึกษาและปฏิบัติตามพิธีกรรมของทุกศาสนาอย่างเท่าเทียมกัน", "การยอมรับความต่างและแสดงออกอย่างพอเหมาะพอควรโดยไม่ก้าวล่วงความเชื่อผู้อื่น", "การพยายามโน้มน้าวให้ทุกคนหันมานับถือศาสนาเดียวกันเพื่อความเป็นเอกภาพ", "การหลีกเลี่ยงการเข้าร่วมกิจกรรมทางสังคมที่มีคนต่างศาสนาอยู่ร่วมด้วย"], 
+    a: 1, 
+    exp: "มัตตัญญุตา คือความรู้จักประมาณ รู้จักความพอดี การอยู่ในสังคมพหุวัฒนธรรมจึงต้องรู้จักแสดงออกในทางที่พอดี เคารพสิทธิและไม่ก้าวล่วงความเชื่อของผู้อื่นเพื่อรักษาสมดุลสังคม" 
+  },
+  { 
+    cat: "หน้าที่พลเมือง วัฒนธรรม และการดำเนินชีวิต", 
+    q: "สมชายอายุ 15 ปีบริบูรณ์ แอบไปทำสัญญาซื้อขายรถจักรยานยนต์ราคาแพงด้วยเงินเก็บของตนเองโดยไม่บอกกล่าวให้พ่อแม่รับทราบ ในทางกฎหมายแพ่ง สัญญานี้จะมีสถานะและผลบังคับใช้อย่างไร?", 
+    choices: ["เป็นโมฆียะ เนื่องจากสมชายยังเป็นผู้เยาว์และไม่ได้รับความยินยอมจากผู้แทนโดยชอบธรรม", "เป็นโมฆะ ทันทีเนื่องจากผู้เยาว์ไม่มีสิทธิทำนิติกรรมใดๆ ทั้งสิ้น", "มีผลสมบูรณ์ทุกประการ เพราะสมชายใช้อำนาจเงินเก็บส่วนตัวในการซื้อ", "มีผลสมบูรณ์ เนื่องจากสมชายมีอายุเกิน 15 ปี ซึ่งถือว่าบรรลุนิติภาวะทางนิติกรรมแล้ว"], 
+    a: 0, 
+    exp: "ผู้เยาว์ (อายุยังไม่ครบ 20 ปีบริบูรณ์) ทำนิติกรรมส่วนใหญ่จะต้องได้รับความยินยอมจากผู้แทนโดยชอบธรรมก่อน มิฉะนั้นจะตกเป็น 'โมฆียะ' (มีผลสมบูรณ์จนกว่าจะถูกบอกล้าง) ไม่ใช่โมฆะตั้งแต่แรก ตัวลวงมักจะสับสนระหว่างโมฆะและโมฆียะ" 
+  },
+  { 
+    cat: "หน้าที่พลเมือง วัฒนธรรม และการดำเนินชีวิต", 
+    q: "หากคนในสังคมไทยละเลยและปฏิเสธบทบาทของ 'สถาบันครอบครัว' โดยมุ่งเน้นไปที่ความสำเร็จเฉพาะบุคคลและการทำงานเพียงอย่างเดียว โครงสร้างสังคมไทยจะได้รับผลกระทบในระยะยาวอย่างไรข้อใดเด่นชัดที่สุด?", 
+    choices: ["รัฐบาลจะสูญเสียอำนาจการปกครองในส่วนท้องถิ่น", "กระบวนการขัดเกลาทางสังคมเบื้องต้นขาดประสิทธิภาพ เกิดปัญหาวิกฤตพฤติกรรมเด็กและเยาวชน", "ระบบเศรษฐกิจจะเติบโตอย่างก้าวกระโดดจนไม่มีคนจน", "วัฒนธรรมประเพณีดั้งเดิมทั้งหมดจะถูกยกเลิกด้วยกฎหมาย"], 
+    a: 1, 
+    exp: "สถาบันครอบครัวมีหน้าที่หลักคือการผลิตสมาชิกใหม่และการขัดเกลาทางสังคมเบื้องต้น (Primary Socialization) หากสถาบันนี้ล้มเหลว เด็กและเยาวชนจะไม่ได้รับการหล่อหลอมค่านิยมและจริยธรรมที่เหมาะสม ส่งผลให้เกิดปัญหาสังคมตามมา" 
+  },
+  { 
+    cat: "หน้าที่พลเมือง วัฒนธรรม และการดำเนินชีวิต", 
+    q: "ข้อใดจัดเป็นการปฏิบัติตนตามระบอบประชาธิปไตยในฐานะพลเมืองดีที่มีความรับผิดชอบต่อสังคม (Civic Duty) มากกว่าเป็นเพียงการรักษาสิทธิส่วนบุคคล?", 
+    choices: ["การไปใช้สิทธิลงคะแนนเลือกตั้งผู้แทนราษฎรตามกฎหมายกำหนด", "การเข้าร่วมชุมนุมสาธารณะเพื่อเรียกร้องผลประโยชน์ส่วนตน", "การตรวจสอบและแจ้งเบาะแสการทุจริตในโครงการก่อสร้างของท้องถิ่น", "การใช้สื่อสังคมออนไลน์วิพากษ์วิจารณ์บุคคลอื่นอย่างเสรี"], 
+    a: 2, 
+    exp: "การตรวจสอบและแจ้งเบาะแสการทุจริตแสดงถึงการมีจิตสาธารณะและการปกป้องผลประโยชน์ของส่วนรวม (Civic Duty) ซึ่งเหนือกว่าสิทธิขั้นพื้นฐานทั่วไปอย่างการไปเลือกตั้งหรือสิทธิส่วนบุคคล" 
+  },
+  { 
+    cat: "เศรษฐศาสตร์", 
+    q: "ในช่วงวิกฤตเศรษฐกิจ หากรัฐบาลตรวจพบว่าสินค้าอุปโภคบริโภคที่จำเป็นมีราคาสูงขึ้นอย่างรวดเร็วเนื่องจากพ่อค้าคนกลางกักตุนสินค้า รัฐบาลควรดำเนินนโยบายทางเศรษฐศาสตร์ข้อใดเพื่อช่วยเหลือผู้บริโภคในระยะสั้น?", 
+    choices: ["การกำหนดราคาขั้นสูง (Price Ceiling)", "การประกันราคาขั้นต่ำ (Price Floor)", "การลดอัตราภาษีมูลค่าเพิ่มสำหรับสินค้าฟุ่มเฟือย", "การปล่อยให้กลไกราคาทำงานอย่างเสรีโดยไม่แทรกแซง"], 
+    a: 0, 
+    exp: "การกำหนดราคาขั้นสูง (Ceiling Price) หรือการควบคุมราคา มีวัตถุประสงค์เพื่อช่วยเหลือผู้บริโภคไม่ให้ต้องซื้อสินค้าราคาแพงเกินไปในช่วงขาดแคลน ส่วนการกำหนดราคาขั้นต่ำ (Price Floor) เป็นการช่วยผู้ผลิต/เกษตรกร" 
+  },
+  { 
+    cat: "เศรษฐศาสตร์", 
+    q: "นายสมศักดิ์ตัดสินใจถอนเงินฝากประจำจากธนาคารจำนวน 500,000 บาท เพื่อนำมาลงทุนเปิดร้านขายอาหารตามสั่ง ค่าดอกเบี้ยฝากประจำที่นายสมศักดิ์ควรจะได้รับจากธนาคารแต่ต้องสูญเสียไป จัดเป็นต้นทุนประเภทใดในทางเศรษฐศาสตร์?", 
+    choices: ["ต้นทุนค่าเสียโอกาส (Opportunity Cost)", "ต้นทุนคงที่ (Fixed Cost)", "ต้นทุนผันแปร (Variable Cost)", "ต้นทุนจม (Sunk Cost)"], 
+    a: 0, 
+    exp: "ต้นทุนค่าเสียโอกาส คือ มูลค่าของผลประโยชน์สูงสุดที่สูญเสียไปจากการเลือกทางเลือกหนึ่ง ในที่นี้คือดอกเบี้ยธนาคารที่เขาจะได้รับหากไม่ถอนเงินออกมาลงทุน ตัวลวงมักตอบต้นทุนจมหรือต้นทุนคงที่" 
+  },
+  { 
+    cat: "เศรษฐศาสตร์", 
+    q: "ภาวะ 'เงินเฟ้อ' (Inflation) ส่งผลกระทบเชิงลบต่อบุคคลกลุ่มใดในสังคมมากที่สุด และรัฐบาลควรใช้มาตรการทางการเงินข้อใดแก้ปัญหา?", 
+    choices: ["ผู้มีรายได้ประจำ / ธนาคารกลางปรับเพิ่มอัตราดอกเบี้ยนโยบาย", "พ่อค้าแม่ค้า / ธนาคารกลางพิมพ์ธนบัตรเพิ่มเข้าสู่ระบบ", "ลูกหนี้ / ธนาคารกลางลดอัตราเงินสำรองตามกฎหมายของธนาคารพาณิชย์", "นักธุรกิจอสังหาริมทรัพย์ / รัฐบาลเพิ่มงบประมาณรายจ่ายหมวดเงินอุดหนุน"], 
+    a: 0, 
+    exp: "เงินเฟ้อทำให้เงินมูลค่าลดลง ผู้มีรายได้ประจำจะเดือดร้อนที่สุดเพราะซื้อของได้น้อยลง การแก้ปัญหาต้องใช้มาตรการการเงินแบบเข้มงวด เช่นการเพิ่มอัตราดอกเบี้ยเพื่อลดปริมาณเงินหมุนเวียนในระบบ" 
+  },
+  { 
+    cat: "เศรษฐศาสตร์", 
+    q: "การรวมกลุ่มทางเศรษฐกิจในภูมิภาคเอเชียตะวันออกเฉียงใต้ (AEC) มีวัตถุประสงค์หลักและก่อให้เกิดความท้าทายสำคัญอย่างไรต่อแรงงานไทย?", 
+    choices: ["เพื่อเปิดเสรีการเคลื่อนย้ายแรงงานฝีมือ ส่งผลให้แรงงานไทยต้องพัฒนาทักษะภาษาและเทคโนโลยีเพื่อแข่งขัน", "เพื่อจัดตั้งกองทัพร่วมกัน ป้องกันการแย่งชิงทรัพยากรทางทะเล", "เพื่อกำหนดให้ทุกประเทศใช้เงินตราสกุลเดียวกันทั้งหมดเหมือนยุโรป", "เพื่อยกเลิกการเก็บภาษีศุลกากรกับสินค้าทุกชนิดทั่วโลก"], 
+    a: 0, 
+    exp: "AEC เน้นตลาดและฐานการผลิตร่วม ซึ่งรวมถึงการเคลื่อนย้ายแรงงานฝีมือ 8 วิชาชีพอย่างเสรี แรงงานไทยจึงเผชิญความท้าทายด้านการแข่งขันและภาษา ตัวลวงเรื่องเงินสกุลเดียวกันยังไม่เกิดขึ้นในอาเซียน" 
+  },
+  { 
+    cat: "เศรษฐศาสตร์", 
+    q: "ปรัชญาของ 'เศรษฐกิจพอเพียง' ในเงื่อนไข 'คุณธรรม' ตามแนวพระราชดำริ มุ่งเน้นการปฏิบัติตนของนักศึกษาในเรื่องใดเพื่อไม่ให้เกิดปัญหาหนี้สินล้นพ้นตัว?", 
+    choices: ["ความซื่อสัตย์สุจริต ขยันอดทน และลดละความโลภในการบริโภค", "การศึกษาหาความรู้ด้านวิชาการและการลงทุนในตลาดหลักทรัพย์ขั้นสูง", "การตัดขาดจากสังคมเมืองและหันไปทำเกษตรกรรมทฤษฎีใหม่เพียงอย่างเดียว", "การเลือกซื้อเฉพาะสินค้าที่มีราคาถูกที่สุดโดยไม่คำนึงถึงคุณภาพ"], 
+    a: 0, 
+    exp: "เงื่อนไขคุณธรรมประกอบด้วย ความซื่อสัตย์สุจริต ความอดทน ความเพียร และการใช้สติปัญญาในการดำเนินชีวิต ซึ่งรวมถึงการลดละกิเลสความโลภเพื่อป้องกันการบริโภคเกินตัว ตัวลวงมักเข้าใจผิดว่าเศรษฐกิจพอเพียงคือต้องทำเกษตรกรรมเท่านั้น" 
+  },
+  { 
+    cat: "ประวัติศาสตร์", 
+    q: "การประเมินความน่าเชื่อถือของ 'ศิลาจารึกสุโขทัยหลักที่ 1' โดยการตรวจสอบลักษณะรูปแบบตัวอักษรลายสือไทยและเนื้อหาเพื่อดูว่าเป็นของจริงหรือทำขึ้นย้อนหลัง จัดอยู่ในขั้นตอนใดของวิธีการทางประวัติศาสตร์?", 
+    choices: ["การวิพากษ์ภายนอก (การประเมินค่าหลักฐาน)", "การรวบรวมหลักฐาน", "การตีความหลักฐาน (การวิพากษ์ภายใน)", "การเรียบเรียงและนำเสนอ"], 
+    a: 0, 
+    exp: "การตรวจสอบว่าหลักฐานเป็นของจริงหรือของปลอม พิจารณาจากอายุ เนื้อวัสดุ ตัวอักษรดั้งเดิม เรียกว่า 'การวิพากษ์ภายนอก' ส่วนการวิพากษ์ภายในคือการประเมินความน่าเชื่อถือของเนื้อหาความจริงข้างในจารึก" 
+  },
+  { 
+    cat: "ประวัติศาสตร์", 
+    q: "สนธิสัญญาเบาว์ริง (Bowring Treaty) ที่สยามลงนามกับอังกฤษในสมัยรัชกาลที่ 4 ส่งผลให้โครงสร้างระบบเศรษฐกิจไทยเกิดการเปลี่ยนแปลงในลักษณะใดอย่างพลิกฝ่ามือ?", 
+    choices: ["เปลี่ยนจากเศรษฐกิจแบบพึ่งพาตนเอง (เพื่อยังชีพ) ไปสู่ระบบเศรษฐกิจแบบการค้าเสรีและการผลิตเพื่อส่งออก", "เปลี่ยนจากการค้าเสรีไปสู่การผูกขาดการค้าทั้งหมดโดยพระคลังสินค้า", "ทำให้สยามยกเลิกการเก็บภาษีอากรทุกประเภทกับราษฎรในประเทศ", "ไทยต้องเปลี่ยนมาใช้ระบบเงินตราปอนด์สเตอร์ลิงของอังกฤษเป็นหลัก"], 
+    a: 0, 
+    exp: "สนธิสัญญาเบาว์ริงทำให้ยกเลิกผูกขาดของพระคลังสินค้า เปลี่ยนสยามให้เข้าสู่ระบบการค้าเสรี ข้าวกลายเป็นสินค้าส่งออกหลัก พลิกโฉมจากเศรษฐกิจยังชีพมาเป็นระบบตลาดโลก ตัวลวงมักเข้าใจว่าไทยเปลี่ยนไปใช้เงินตราของต่างประเทศ" 
+  },
+  { 
+    cat: "ประวัติศาสตร์", 
+    q: "การปฏิรูปการปกครองส่วนภูมิภาคในสมัยรัชกาลที่ 5 โดยการยกเลิกระบบเมืองประเทศราชเดิมแล้วจัดตั้ง 'ระบบเทศาภิบาล' มีวัตถุประสงค์หลักทางการเมืองและประวัติศาสตร์อย่างไร?", 
+    choices: ["เพื่อรวมอำนาจเข้าสู่ศูนย์กลางและป้องกันการแทรกแซง/ยึดครองดินแดนจากจักรวรรดินิยมตะวันตก", "เพื่อเตรียมความพร้อมในการเปลี่ยนระบอบการปกครองเป็นประชาธิปไตย", "เพื่อกระจายอำนาจให้ท้องถิ่นสามารถเลือกตั้งผู้ว่าราชการจังหวัดได้เอง", "เพื่อส่งเสริมให้เกิดความเท่าเทียมกันของกลุ่มชาติพันธุ์ต่างๆ ในชายแดน"], 
+    a: 0, 
+    exp: "ระบบมณฑลเทศาภิบาลจัดทำขึ้นเพื่อกระชับอำนาจจากเมืองหน้าด่านและประเทศราชเข้าสู่กรุงเทพฯ เพื่อแสดงให้ตะวันตกเห็นว่าสยามมีขอบเขตดินแดนและระบบบริหารราชการแผ่นดินที่ทันสมัย ป้องกันการอ้างสิทธิ์เข้ายึดครอง" 
+  },
+  { 
+    cat: "ประวัติศาสตร์", 
+    q: "เหตุการณ์ระเบิดพลีชีพและการสู้รบในทวีปยุโรปช่วงปี พ.ศ. 2457 - 2461 (สงครามโลกครั้งที่ 1) มีชนวนเหตุปัจจุบันที่จุดชนวนให้สงครามปะทุขึ้นมาจากเหตุการณ์ใด?", 
+    choices: ["การลอบปลงพระชนม์อาร์ชดยุก ฟรันซ์ แฟร์ดีนันด์ แห่งออสเตรีย-ฮังการี", "การโจมตีอ่าวเพิร์ลฮาร์เบอร์โดยกองทัพญี่ปุ่น", "การล่มสลายของกำแพงเบอร์ลินในเยอรมนี", "การส่งกองทัพนาซีเข้าบุกยึดครองประเทศโปแลนด์"], 
+    a: 0, 
+    exp: "สงครามโลกครั้งที่ 1 มีชนวนเหตุฉับพลันจากการลอบปลงพระชนม์อาร์ชดยุก ฟรันซ์ แฟร์ดีนันด์ ที่เมืองซาราเยโว ส่วนการบุกโปแลนด์และการโจมตีเพิร์ลฮาร์เบอร์เป็นเหตุการณ์ในสงครามโลกครั้งที่ 2 ซึ่งจัดเป็นตัวลวงที่พบบ่อย" 
+  },
+  { 
+    cat: "ประวัติศาสตร์", 
+    q: "วัฒนธรรมและภูมิปัญญาไทยในสมัยอยุธยาข้อใด ที่สะท้อนถึงการปรับตัวและการรับอิทธิพลทางสถาปัตยกรรมมาจากชาติตะวันตกและศิลปะเปอร์เซียได้อย่างชัดเจนที่สุด?", 
+    choices: ["การสร้างพระราชวังนารายณ์ราชนิเวศน์ที่มีซุ้มประตูหน้าต่างแบบโค้งแหลม (Gothic/Islamic)", "การสร้างวัดพระศรีสรรเพชญ์กลางเกาะเมือง", "การสลักภาพพระพุทธรูปบนผาหินขนาดใหญ่", "การปั้นเครื่องสังคโลกส่งออกไปขายต่างประเทศ"], 
+    a: 0, 
+    exp: "ในสมัยสมเด็จพระนารายณ์มหาราช มีการติดต่อกับฝรั่งเศสและเปอร์เซียอย่างแน่นแฟ้น โบราณสถานในลพบุรีจึงผสมผสานสถาปัตยกรรมซุ้มประตูโค้งแหลมและตกแต่งช่องไฟแบบตะวันตก ส่วนเครื่องสังคโลกเป็นภูมิปัญญาสมัยสุโขทัย" 
+  },
+  { 
+    cat: "ภูมิศาสตร์", 
+    q: "หากนักศึกษาพลิกดูแผนที่ประเทศไทยแล้วพบเส้นชั้นความสูง (Contour line) เรียงตัวเบียดชิดกันแน่นมากในบริเวณพื้นที่หนึ่ง ข้อมูลนี้บอกลักษณะภูมิประเทศในพื้นที่นั้นอย่างไร?", 
+    choices: ["เป็นพื้นที่ลาดชันสูงมาก เช่น หน้าผา หรือเทือกเขาสูง", "เป็นที่ราบลุ่มแม่น้ำที่มีน้ำท่วมขังเป็นประจำ", "เป็นชายหาดริมทะเลที่มีความลาดเอียงน้อยมาก", "เป็นแอ่งกระทะและที่ราบต่ำ"], 
+    a: 0, 
+    exp: "เส้นชั้นความสูง (Contour Line) ยิ่งเรียงชิดกันมากเท่าใด แสดงว่าพื้นที่มีความลาดชันสูงมาก (เช่น หน้าผาหรือยอดเขา) หากเส้นอยู่ห่างกันแสดงว่าเป็นที่ราบลาดชันน้อย ตัวลวงมักคิดว่าเส้นแน่นคือป่าทึบหรือที่ราบลุ่มน้ำ" 
+  },
+  { 
+    cat: "ภูมิศาสตร์", 
+    q: "พื้นที่ภาคตะวันออกเฉียงเหนือของประเทศไทยมักประสบปัญหากับดักภัยแล้งและดินขาดความอุดมสมบูรณ์ในทางภูมิศาสตร์ ปัญหานี้สอดคล้องกับปัจจัยทางธรรมชาติข้อใดมากที่สุด?", 
+    choices: ["ลักษณะดินเป็นดินทรายไม่อุ้มน้ำ และมีโครงสร้างหินเกลือใต้ดิน", "พื้นที่ส่วนใหญ่เป็นภูเขาไฟเก่าที่ยังไม่ดับสนิท", "ได้รับอิทธิพลจากลมมรสุมตะวันตกเฉียงใต้เต็มๆ ตลอดทั้งปี", "ไม่มีแม่น้ำสายหลักไหลผ่านพื้นที่เลย"], 
+    a: 0, 
+    exp: "ดินในภาคอีสานส่วนใหญ่เป็นดินทราย (Sandy soil) ซึ่งมีคุณสมบัติไม่อุ้มน้ำ และมีโครงสร้างชั้นหินเกลือ (Rock salt) ใต้ดิน ทำให้น้ำใต้ดินเค็มและเกิดดินเค็มซ้ำเติมภัยแล้ง ส่วนแม่น้ำหลักนั้นภาคอีสานมีแม่น้ำโขง ชี มูล ไหลผ่าน" 
+  },
+  { 
+    cat: "ภูมิศาสตร์", 
+    q: "ปรากฏการณ์ภัยพิบัติทางธรรมชาติ 'สึนามิ' (Tsunami) ที่เคยสร้างความเสียหายใหญ่ในภาคใต้ของไทย มีสาเหตุหลักและกลไกการเกิดมาจากสภาวะข้อใด?", 
+    choices: ["แผ่นดินไหวขนาดใหญ่ใต้ทะเลลึกรุนแรงจนเกิดการขยับตัวของเปลือกโลกในแนวดิ่ง", "ลมพายุหมุนเขตร้อนกำลังแรงพัดผ่านชายฝั่งอย่างกะทันหัน", "การเปลี่ยนแปลงของกระแสน้ำอุ่นและน้ำเย็นในมหาสมุทรแบบเอลนีโญ", "ดวงจันทร์และดวงอาทิตย์โคจรมาอยู่ในแนวเส้นตรงเดียวกันพอดี"], 
+    a: 0, 
+    exp: "สึนามิเกิดจากการแทนที่น้ำปริมาณมหาศาลอย่างเฉียบพลัน ซึ่งส่วนใหญ่เกิดจากการเคลื่อนตัวของแผ่นเปลือกโลกแนวดิ่งใต้ทะเล (แผ่นดินไหวใต้ทะเล) ตัวลวงมักเข้าใจผิดว่าเกิดจากลมพายุ ซึ่งพายุจะทำให้เกิดคลื่นซัดฝั่ง (Storm Surge) ไม่ใช่สึนามิ" 
+  },
+  { 
+    cat: "ภูมิศาสตร์", 
+    q: "พิกัดทางภูมิศาสตร์ระบุว่า เมือง A ตั้งอยู่ที่ลองจิจูด 105 องศาตะวันออก (เวลาประเทศไทย) ขณะที่เมือง B ตั้งอยู่ที่ลองจิจูด 15 องศาตะวันออก หากเวลาที่เมือง A เป็นเวลา 12.00 น. เวลาที่เมือง B จะเป็นเวลาเท่าใด?", 
+    choices: ["06.00 น. วันเดียวกัน", "18.00 น. วันเดียวกัน", "02.00 น. วันเดียวกัน", "12.00 น. เท่ากันเนื่องจากอยู่ซีกโลกเหนือ"], 
+    a: 0, 
+    exp: "ระยะห่างของลองจิจูด $105 - 15 = 90$ องศา โดยทุกๆ 15 องศา เวลาจะต่างกัน 1 ชั่วโมง ($90 / 15 = 6$ ชั่วโมง) และเนื่องจากเมือง B อยู่ทางทิศตะวันตกมากกว่าเมือง A เวลาของเมือง B จึงต้องช้ากว่า $12.00 - 6$ ชั่วโมง = $06.00$ น." 
+  },
+  { 
+    cat: "ภูมิศาสตร์", 
+    q: "ข้อใดจัดเป็นแนวทางการปรับตัวและอนุรักษ์สิ่งแวดล้อมตามปฏิญญาสากลเพื่อแก้ปัญหาภาวะโลกร้อน (Global Warming) ที่สามารถปฏิบัติได้จริงในระดับครัวเรือน?", 
+    choices: ["การลดการใช้พลาสติกแบบใช้ครั้งเดียวทิ้ง คัดแยกขยะ และลดการเปิดเครื่องปรับอากาศ", "การย้ายถิ่นฐานไปตั้งบ้านเรือนในบริเวณที่มีอากาศหนาวจัดเพื่อดับความร้อน", "การงดการบริโภคเนื้อสัตว์และการทำเกษตรกรรมทุกรูปแบบในชุมชน", "การสร้างกำแพงกั้นน้ำทะเลล้อมรอบหมู่บ้านเพื่อป้องกันอุณหภูมิสูง"], 
+    a: 0, 
+    exp: "การลดขยะ การคัดแยกขยะ และการประหยัดพลังงาน (เช่น ลดการเปิดแอร์) เป็นการลดการปล่อยก๊าซเรือนกระจกโดยตรงที่เริ่มได้จากระดับบุคคลและครัวเรือน ตัวเลือกอื่นเป็นวิธีที่ปฏิบัติจริงไม่ได้หรือไม่มีผลต่อการลดโลกร้อน" 
+  }
+];
+
+let state = {
+  screen: 'login', studentName: '', studentId: '', questions: [], answers: [], checked: [], current: 0
+};
+
+function shuffleArray(arr) {
+  let newArr = arr.slice();
+  for (let i = newArr.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
+}
+
+function startApp() {
+  const nameInput = document.getElementById('s_name').value;
+  const idInput = document.getElementById('s_id').value;
+  if (!nameInput.trim()) { alert('กรุณากรอกชื่อ-นามสกุลก่อนเข้าสอบครับ'); return; }
+  
+  state.studentName = nameInput;
+  state.studentId = idInput || 'สกร. มัธยมศึกษาตอนต้น';
+  document.getElementById('subtitle-text').innerText = 'ผู้เข้าสอบ: ' + state.studentName;
+  
+  let shuffledDB = shuffleArray(database);
+  state.questions = [];
+  
+  for (let i = 0; i < shuffledDB.length; i++) {
+    let q = shuffledDB[i];
+    let correctText = q.choices[q.a];
+    let newChoices = shuffleArray(q.choices);
+    let newCorrectIndex = newChoices.indexOf(correctText);
+    
+    state.questions.push({
+      cat: q.cat, q: q.q, exp: q.exp, choices: newChoices, correctAnswer: newCorrectIndex
+    });
+  }
+  
+  state.answers = new Array(state.questions.length).fill(null);
+  state.checked = new Array(state.questions.length).fill(false);
+  state.current = 0;
+  state.screen = 'quiz';
+  renderApp();
+}
+
+function renderApp() {
+  const app = document.getElementById('app');
+  if (state.screen === 'login') {
+    app.innerHTML = `
+      <div class="card" style="text-align: center; padding: 40px 20px;">
+        <div style="font-size: 60px; margin-bottom: 10px;">🗺️</div>
+        <h2 style="color: var(--primary-dark); margin-bottom: 10px;">ระบบประเมินสมรรถนะ N-NET สังคมศึกษา ม.ต้น</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">คัดสรรตัวลวงคุณภาพสูงและการคิดวิเคราะห์เชิงประยุกต์ จำนวน 20 ข้อ</p>
+        <div class="inp-group">
+          <label class="inp-label">ชื่อ-นามสกุลผู้เข้าสอบ</label>
+          <input type="text" id="s_name" class="inp-text" placeholder="พิมพ์ชื่อและนามสกุลที่นี่">
+        </div>
+        <div class="inp-group">
+          <label class="inp-label">รหัสนักศึกษา / ศูนย์ สกร.</label>
+          <input type="text" id="s_id" class="inp-text" value="ระดับมัธยมศึกษาตอนต้น">
+        </div>
+        <button class="btn btn-primary" style="margin-top: 10px;" onclick="startApp()">เริ่มทำแบบทดสอบวิเคราะห์สังคมศึกษา 🚀</button>
+      </div>
+    `;
+  } 
+  else if (state.screen === 'quiz') {
+    let total = state.questions.length;
+    let curr = state.current;
+    let q = state.questions[curr];
+    let ans = state.answers[curr];
+    let isChecked = state.checked[curr];
+    let pct = Math.round(((curr + 1) / total) * 100);
+    
+    let letters = ['ก', 'ข', 'ค', 'ง'];
+    let choicesHTML = '';
+    
+    for (let i = 0; i < 4; i++) {
+      let cssClass = 'choice';
+      if (isChecked) {
+        if (i === q.correctAnswer) cssClass += ' correct';
+        else if (i === ans && ans !== q.correctAnswer) cssClass += ' wrong';
+      } else {
+        if (i === ans) cssClass += ' selected';
+      }
+      choicesHTML += `<button class="${cssClass}" ${isChecked ? 'disabled' : ''} onclick="selectAnswer(${i})">
+                        <div class="c-let">${letters[i]}</div>
+                        <div>${q.choices[i]}</div>
+                      </button>`;
+    }
+    
+    let fbHTML = isChecked ? (
+      ans === q.correctAnswer 
+        ? `<div class="feedback ok">✅ <strong>ถูกต้อง!</strong><div class="fb-explain">💡 <strong>วิเคราะห์หลักการ:</strong> ${q.exp}</div></div>`
+        : `<div class="feedback no">❌ <strong>วิเคราะห์พลาดไปนิดครับ</strong> — คำตอบที่ถูกคือแถบสีเขียว<div class="fb-explain">💡 <strong>พิจารณาจากเฉลย:</strong> ${q.exp}</div></div>`
+    ) : '';
+    
+    let btnPrev = curr > 0 ? `<button class="btn btn-secondary" onclick="goPrev()">← ข้อก่อนหน้า</button>` : `<div style="width:48%"></div>`;
+    let btnNext = isChecked ? (
+      curr === total - 1 ? `<button class="btn btn-primary" onclick="showResult()">ดูผลประเมินสมรรถนะ 🏆</button>` : `<button class="btn btn-primary" onclick="goNext()">ข้อถัดไป →</button>`
+    ) : `<button class="btn btn-primary" ${ans === null ? 'disabled' : ''} onclick="checkAnswer()">ตรวจคำตอบ ✓</button>`;
+    
+    let dotsHTML = '<div class="dot-nav">';
+    for (let i = 0; i < total; i++) {
+      let dClass = 'dot';
+      if (i === curr) dClass += ' active';
+      else if (state.checked[i]) dClass += (state.answers[i] === state.questions[i].correctAnswer) ? ' ok' : ' no';
+      dotsHTML += `<button class="${dClass}" onclick="jumpTo(${i})">${i+1}</button>`;
+    }
+    dotsHTML += '</div>';
+
+    app.innerHTML = `
+      <div class="card" style="padding: 16px 20px;">
+        <div class="prog-text"><span>ข้อที่ ${curr + 1} จาก ${total}</span><span>ความคืบหน้า ${pct}%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width: ${pct}%"></div></div>
+      </div>
+      <div class="card">
+        <div class="q-badge">${q.cat}</div>
+        <div class="q-text">${q.q}</div>
+        <div class="choices">${choicesHTML}</div>
+        ${fbHTML}
+        <div class="nav-buttons">${btnPrev}${btnNext}</div>
+      </div>
+      ${dotsHTML}
+    `;
+  }
+  else if (state.screen === 'result') {
+    let total = state.questions.length;
+    let score = 0;
+    let catStats = {};
+    
+    for (let i = 0; i < total; i++) {
+      let q = state.questions[i];
+      if (!catStats[q.cat]) catStats[q.cat] = { total: 0, correct: 0 };
+      catStats[q.cat].total++;
+      if (state.answers[i] === q.correctAnswer) { score++; catStats[q.cat].correct++; }
+    }
+    
+    let pct = Math.round((score / total) * 100);
+    
+    let analysisHTML = '';
+    for (let cat in catStats) {
+      let cPct = Math.round((catStats[cat].correct / catStats[cat].total) * 100);
+      let isWeak = cPct < 60;
+      let tagClass = isWeak ? 'weak' : 'good';
+      let tagText = isWeak ? '⚠️ ควรเร่งทบทวนจุดสับสน' : '✅ ผ่านเกณฑ์การวิเคราะห์ชั้นสูง';
+      
+      let advice = '';
+      if(cat === "ศาสนา ศีลธรรม จริยธรรม") advice = isWeak ? 'มักสับสนในการจับคู่สถานการณ์ชีวิตประจำวันกับหลักธรรมเฉพาะทาง เช่น สัปปุริสธรรม 7 หรือ มรรค 8' : 'เยี่ยมมาก! แตกฉานในการนำหลักธรรมทางศาสนามาประยุกต์แก้ปัญหาเชิงจริยธรรมได้ดี';
+      else if(cat === "หน้าที่พลเมือง วัฒนธรรม และการดำเนินชีวิต") advice = isWeak ? 'ยังมีจุดสับสนความแตกต่างระหว่างนิติกรรมที่เป็นโมฆะและโมฆียะ รวมถึงบทบาทสถาบันทางสังคม' : 'ยอดเยี่ยม! เข้าใจข้อกฎหมายแพ่งเบื้องต้นและกลไกสิทธิหน้าที่ของพลเมืองประชาธิปไตยอย่างถูกต้อง';
+      else if(cat === "เศรษฐศาสตร์") advice = isWeak ? 'ยังพบบัญชีข้อผิดพลาดเรื่องกลไกราคาการแทรกแซงของรัฐ ต้นทุนค่าเสียโอกาส และมาตรการแก้ไขเงินเฟ้อ' : 'เก่งมาก! วิเคราะห์สมดุลนโยบายการเงินการคลัง และดุลยภาพความพอเพียงเชิงจริยธรรมได้แม่นยำ';
+      else if(cat === "ประวัติศาสตร์") advice = isWeak ? 'สับสนเรื่องความแตกต่างของการวิพากษ์หลักฐานภายนอก-ภายใน และผลลัพธ์เชิงโครงสร้างของสนธิสัญญาเบาว์ริง' : 'สุดยอดมาก! มีทักษะการสืบค้นด้วยวิธีการทางประวัติศาสตร์และเข้าใจปฏิสัมพันธ์เชิงเวลาในอดีตดีเยี่ยม';
+      else if(cat === "ภูมิศาสตร์") advice = isWeak ? 'ผิดพลาดในการวิเคราะห์มิติสัมพันธ์เรื่องการคำนวณเวลาลองจิจูด เส้นชั้นความสูงแผนที่ และสาเหตุภัยพิบัติ' : 'ยอดเยี่ยม! แตกฉานในเครื่องมือทางภูมิศาสตร์ ปัจจัยทางกายภาพ และการปรับตัวรับมือภัยพิบัติอย่างเป็นระบบ';
+
+      analysisHTML += `
+        <div class="analysis-item ${isWeak ? 'weak' : 'good'}">
+          <span class="analysis-tag ${tagClass}">${tagText}</span>
+          <div style="font-weight: 700; font-size: 15px; margin-bottom: 2px;">สาระ: ${cat}</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">ทำถูกต้อง ${catStats[cat].correct} จาก ${catStats[cat].total} ข้อ (${cPct}%)</div>
+          <div style="font-size: 13px; line-height:1.4;">💡 <strong>คำแนะนำย้อนกลับรายบุคคล:</strong> ${advice}</div>
+        </div>
+      `;
+    }
+
+    let reviewHTML = '<div class="card" style="margin-top:20px"><div style="font-weight:700; margin-bottom:12px;">📋 รายงานการวิเคราะห์คำตอบรายข้อแบบละเอียด</div>';
+    for (let i = 0; i < total; i++) {
+      let q = state.questions[i];
+      let isCorr = (state.answers[i] === q.correctAnswer);
+      reviewHTML += `
+        <div class="review-item">
+          <div class="r-q"><span class="ri-tick ${isCorr?'ok':'no'}">${isCorr?'✓':'✗'}</span> ข้อ ${i+1}: ${q.q}</div>
+          <div class="r-a" style="color:var(--text-muted)">คำตอบของคุณ: ${state.answers[i] !== null ? q.choices[state.answers[i]] : 'ไม่ได้เลือกคำตอบ'}</div>
+          <div class="r-a" style="color:var(--green); font-weight:600;">คำตอบที่ถูกต้อง: ${q.choices[q.correctAnswer]}</div>
+        </div>
+      `;
+    }
+    reviewHTML += '</div>';
+
+    app.innerHTML = `
+      <div class="card" style="text-align:center; padding:32px 20px;">
+        <h3 style="color:var(--primary-dark); margin-bottom:6px;">รายงานผลประเมินสมรรถนะผู้เรียน N-NET สังคมศึกษา</h3>
+        <div style="font-size:18px; font-weight:700;">คุณ ${state.studentName}</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">รหัส/สังกัด: ${state.studentId}</div>
+        
+        <div style="font-size:56px; font-weight:800; color:var(--primary-dark); line-height:1;">${score}</div>
+        <div style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">คะแนนรวมสุทธิ (จากทั้งหมด ${total} ข้อ)</div>
+        
+        <div class="grid-stats">
+          <div class="stat-box"><div class="stat-num green">${score}</div><div style="font-size:12px;color:var(--text-muted)">ตอบถูก (ข้อ)</div></div>
+          <div class="stat-box"><div class="stat-num red">${total - score}</div><div style="font-size:12px;color:var(--text-muted)">ตอบผิด (ข้อ)</div></div>
+          <div class="stat-box"><div class="stat-num blue">${pct}%</div><div style="font-size:12px;color:var(--text-muted)">สัดส่วนความแม่นยำ</div></div>
+        </div>
+      </div>
+
+      <div class="analysis-card">
+        <div class="analysis-header">📊 สรุปรายงานจุดบกพร่องแยกตามกลุ่มสาระการเรียนรู้</div>
+        ${analysisHTML}
+      </div>
+      
+      <button class="btn btn-primary" onclick="location.reload()">🔄 รีเฟรชเพื่อสุ่มข้อสอบทำใหม่อีกครั้ง</button>
+      ${reviewHTML}
+    `;
+  }
+}
+
+function selectAnswer(index) { if (state.checked[state.current]) return; state.answers[state.current] = index; renderApp(); }
+function checkAnswer() { if (state.answers[state.current] === null) return; state.checked[state.current] = true; renderApp(); }
+function goNext() { if (state.current < state.questions.length - 1) { state.current++; renderApp(); } }
+function goPrev() { if (state.current > 0) { state.current--; renderApp(); } }
+function jumpTo(index) { state.current = index; renderApp(); }
+function showResult() { state.screen = 'result'; renderApp(); }
+
+renderApp();
+</script>
+</body>
+</html>
